@@ -22,15 +22,15 @@ public class MainActivity extends Activity {
     public void onClickGo(View v) {
     		long n = Long.parseLong( input.getText().toString() );
     		
-    		long start = System.currentTimeMillis();
-    		long resultJ = FibLib.fibJ(n);
-    		long timeJ = System.currentTimeMillis() - start;
-    		output.append( String.format("\nfib(%d)=%d (%d ms)", n, resultJ, timeJ) );
+    		long start = System.nanoTime();
+    		long resultJ = FibLib.fibJI(n);
+    		long timeJ = System.nanoTime() - start;
+    		output.append( String.format("\nfibJI(%d)=%d (%d ns)", n, resultJ, timeJ) );
     		
-    		start = System.currentTimeMillis();
-    		long resultN = FibLib.fibN(n);
-    		long timeN = System.currentTimeMillis() - start;
-    		output.append( String.format("\nfib(%d)=%d (%d ms)", n, resultN, timeN) );
+    		start = System.nanoTime();
+    		long resultN = FibLib.fibNI(n);
+    		long timeN = System.nanoTime() - start;
+    		output.append( String.format("\nfibNI(%d)=%d (%d ns)", n, resultN, timeN) );
     		
     }
 }
