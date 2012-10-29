@@ -24,6 +24,8 @@ public class FibLib {
 	public static native long fibN(long n);
 	public static native long fibNI(long n);
 	
+	public static native void version(String version);
+	
 	static {
 		System.loadLibrary("FibNative");
 	}

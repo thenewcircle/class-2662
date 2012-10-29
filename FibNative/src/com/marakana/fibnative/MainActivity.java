@@ -22,6 +22,8 @@ public class MainActivity extends Activity {
     public void onClickGo(View v) {
     		long n = Long.parseLong( input.getText().toString() );
     		
+    		FibLib.version("FibLib v.1.2");
+    		
     		long start = System.nanoTime();
     		long resultJ = FibLib.fibJI(n);
     		long timeJ = System.nanoTime() - start;
