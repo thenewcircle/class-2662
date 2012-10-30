@@ -5,6 +5,7 @@ import android.os.RemoteException;
 import com.marakana.fibcommon.IFibService;
 import com.marakana.fibcommon.Request;
 import com.marakana.fibcommon.Response;
+import com.marakana.fibcommon.ResponseListener;
 import com.marakana.fibnative.FibLib;
 
 public class IFibServiceImpl extends IFibService.Stub {
@@ -31,6 +32,11 @@ public class IFibServiceImpl extends IFibService.Stub {
 		time = System.currentTimeMillis() - time;
 
 		return new Response(time, result);
+	}
+
+	public void asyncFib(Request request, ResponseListener listener)
+			throws RemoteException {
+		listener.onResponse( fib(request) );
 	}
 
 }
