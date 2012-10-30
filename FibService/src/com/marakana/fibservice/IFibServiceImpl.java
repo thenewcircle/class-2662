@@ -1,8 +1,10 @@
 package com.marakana.fibservice;
 
 import android.os.RemoteException;
+
 import com.marakana.fibcommon.IFibService;
 import com.marakana.fibcommon.Request;
+import com.marakana.fibcommon.Response;
 import com.marakana.fibnative.FibLib;
 
 public class IFibServiceImpl extends IFibService.Stub {
@@ -15,15 +17,20 @@ public class IFibServiceImpl extends IFibService.Stub {
 		return FibLib.fibN(n);
 	}
 
-	public long fib(Request request) throws RemoteException {
-		if (request.getAlgorithm() == Request.JAVA_RECURSIVE) {
-			return FibLib.fibJ(request.getN());
-		} else if (request.getAlgorithm() == Request.NATIVE_RECURSIVE) {
-			return FibLib.fibN(request.getN());
-		} else {
-			return -1;
-		}
+	public Response fib(Request request) throws RemoteException {
+		long time = System.currentTimeMillis();
+		long result = -1;
 
+		if (request.getAlgorithm() == Request.JAVA_RECURSIVE) {
+			result = FibLib.fibJ(request.getN());
+		} else if (request.getAlgorithm() == Request.NATIVE_RECURSIVE) {
+			result = FibLib.fibN(request.getN());
+		}
+		
+		// time delta
+		time = System.currentTimeMillis() - time;
+
+		return new Response(time, result);
 	}
 
 }

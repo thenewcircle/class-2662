@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.marakana.fibcommon.IFibService;
 import com.marakana.fibcommon.Request;
+import com.marakana.fibcommon.Response;
 
 public class MainActivity extends Activity {
 	private static final Intent IFIB_SERVICE_INTENT = new Intent(
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
 
 		input = (EditText) findViewById(R.id.input);
 		output = (TextView) findViewById(R.id.output);
-		
+
 		bindService(IFIB_SERVICE_INTENT, SERVICE_CONN, BIND_AUTO_CREATE);
 	}
 
@@ -50,23 +51,20 @@ public class MainActivity extends Activity {
 
 	public void onClickGo(View v) throws RemoteException {
 		// Assert
-		if(service==null) return;
-		
+		if (service == null)
+			return;
+
 		long n = Long.parseLong(input.getText().toString());
 
 		Request javaReqursive = new Request(Request.JAVA_RECURSIVE, n);
-		long start = System.currentTimeMillis();
-		long resultJ = service.fib( javaReqursive );
-		long timeJ = System.currentTimeMillis() - start;
-		output.append(String
-				.format("\nfibJI(%d)=%d (%d ms)", n, resultJ, timeJ));
+		Response responseJ = service.fib(javaReqursive);
+		output.append(String.format("\nfibJI(%d)=%d (%d ms)", n,
+				responseJ.getResult(), responseJ.getTime()));
 
 		Request nativeReqursive = new Request(Request.NATIVE_RECURSIVE, n);
-		start = System.currentTimeMillis();
-		long resultN = service.fib( nativeReqursive );
-		long timeN = System.currentTimeMillis() - start;
-		output.append(String
-				.format("\nfibNI(%d)=%d (%d ms)", n, resultN, timeN));
+		Response responseN = service.fib(nativeReqursive);
+		output.append(String.format("\nfibNI(%d)=%d (%d ms)", n,
+				responseN.getResult(), responseN.getTime()));
 
 	}
 }
