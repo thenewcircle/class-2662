@@ -1,0 +1,69 @@
+package com.marakana.fibclient;
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.marakana.fibcommon.IFibService;
+
+public class MainActivity extends Activity {
+	private static final Intent IFIB_SERVICE_INTENT = new Intent(
+			"com.marakana.fibcommon.IFibService");
+	private EditText input;
+	private TextView output;
+	private IFibService service;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		input = (EditText) findViewById(R.id.input);
+		output = (TextView) findViewById(R.id.output);
+		
+		bindService(IFIB_SERVICE_INTENT, SERVICE_CONN, BIND_AUTO_CREATE);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unbindService(SERVICE_CONN);
+	}
+
+	ServiceConnection SERVICE_CONN = new ServiceConnection() {
+		public void onServiceConnected(ComponentName name, IBinder binder) {
+			service = IFibService.Stub.asInterface(binder);
+		}
+
+		public void onServiceDisconnected(ComponentName name) {
+			service = null;
+		}
+	};
+
+	public void onClickGo(View v) throws RemoteException {
+		// Assert
+		if(service==null) return;
+		
+		long n = Long.parseLong(input.getText().toString());
+
+		long start = System.currentTimeMillis();
+		long resultJ = service.fibJ(n);
+		long timeJ = System.currentTimeMillis() - start;
+		output.append(String
+				.format("\nfibJI(%d)=%d (%d ms)", n, resultJ, timeJ));
+
+		start = System.currentTimeMillis();
+		long resultN = service.fibN(n);
+		long timeN = System.currentTimeMillis() - start;
+		output.append(String
+				.format("\nfibNI(%d)=%d (%d ms)", n, resultN, timeN));
+
+	}
+}
