@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.marakana.fibcommon.IFibService;
+import com.marakana.fibcommon.Request;
 
 public class MainActivity extends Activity {
 	private static final Intent IFIB_SERVICE_INTENT = new Intent(
@@ -53,14 +54,16 @@ public class MainActivity extends Activity {
 		
 		long n = Long.parseLong(input.getText().toString());
 
+		Request javaReqursive = new Request(Request.JAVA_RECURSIVE, n);
 		long start = System.currentTimeMillis();
-		long resultJ = service.fibJ(n);
+		long resultJ = service.fib( javaReqursive );
 		long timeJ = System.currentTimeMillis() - start;
 		output.append(String
 				.format("\nfibJI(%d)=%d (%d ms)", n, resultJ, timeJ));
 
+		Request nativeReqursive = new Request(Request.NATIVE_RECURSIVE, n);
 		start = System.currentTimeMillis();
-		long resultN = service.fibN(n);
+		long resultN = service.fib( nativeReqursive );
 		long timeN = System.currentTimeMillis() - start;
 		output.append(String
 				.format("\nfibNI(%d)=%d (%d ms)", n, resultN, timeN));
