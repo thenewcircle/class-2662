@@ -10,7 +10,7 @@ public class FibService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		if(serviceImpl==null) {
-			serviceImpl = new IFibServiceImpl();
+			serviceImpl = new IFibServiceImpl(this);
 		}
 		return serviceImpl;
 	}
