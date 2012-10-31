@@ -76,8 +76,8 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "scanReceiver received!");
 			// Refreshes the chart once we have scan results
-			View chartView = ChartFactory.getBarChartView(MainActivity.this,
-					getDataset(), renderer, BarChart.Type.DEFAULT);
+			View chartView = ChartFactory.getLineChartView(MainActivity.this,
+					getDataset(), renderer);
 
 			chartLayout.removeAllViews();
 			chartLayout.addView(chartView);
@@ -112,10 +112,10 @@ public class MainActivity extends Activity {
 		renderer.setPointSize(10f);
 		renderer.setMargins(new int[] { 0, 0, 0, 0 });
 		XYSeriesRenderer r = new XYSeriesRenderer();
-		r.setColor(Color.WHITE);
+		r.setColor(Color.BLUE);
 		r.setPointStyle(PointStyle.CIRCLE);
 		r.setFillBelowLine(true);
-		r.setFillBelowLineColor(Color.BLUE);
+		r.setFillBelowLineColor(Color.WHITE);
 		r.setFillPoints(true);
 		renderer.addSeriesRenderer(r);
 		renderer.setAxesColor(Color.DKGRAY);
