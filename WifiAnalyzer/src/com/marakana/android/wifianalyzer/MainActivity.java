@@ -3,11 +3,14 @@ package com.marakana.android.wifianalyzer;
 import java.util.List;
 
 import org.achartengine.ChartFactory;
+import org.achartengine.chart.BarChart;
 import org.achartengine.chart.PointStyle;
 import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
+import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
+import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -24,10 +27,10 @@ import android.widget.FrameLayout;
 
 public class MainActivity extends Activity {
 	private static final String TAG = "WifiAnalyzer";
-	private static final int SERIES_NR = 1;
 
 	private WifiManager wifiManager;
 	private FrameLayout chartLayout;
+	private XYMultipleSeriesRenderer renderer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,10 +76,8 @@ public class MainActivity extends Activity {
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "scanReceiver received!");
 			// Refreshes the chart once we have scan results
-//			View chartView = ChartFactory.getBarChartView(MainActivity.this,
-//					getDataset(), getRenderer(), BarChart.Type.DEFAULT);
-			View chartView = ChartFactory.getLineChartView(MainActivity.this,
-					getDataset(), getRenderer());
+			View chartView = ChartFactory.getBarChartView(MainActivity.this,
+					getDataset(), renderer, BarChart.Type.DEFAULT);
 
 			chartLayout.removeAllViews();
 			chartLayout.addView(chartView);
@@ -85,14 +86,17 @@ public class MainActivity extends Activity {
 
 	private XYMultipleSeriesDataset getDataset() {
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		
+
+		renderer = getRenderer();
 		List<ScanResult> results = wifiManager.getScanResults();
-		
+
 		XYSeries series = new XYSeries("Scan Results");
-		
-		int x=1;
-		for(ScanResult result: results) {
-			series.add(x++, result.level);
+
+		int i = 1;
+		for (ScanResult result : results) {
+			i++;
+			series.add(i, result.level);
+			renderer.addXTextLabel(i, result.SSID);
 		}
 		dataset.addSeries(series);
 
@@ -108,14 +112,15 @@ public class MainActivity extends Activity {
 		renderer.setPointSize(10f);
 		renderer.setMargins(new int[] { 0, 0, 0, 0 });
 		XYSeriesRenderer r = new XYSeriesRenderer();
-		r.setColor(Color.BLUE);
-		r.setPointStyle(PointStyle.SQUARE);
+		r.setColor(Color.WHITE);
+		r.setPointStyle(PointStyle.CIRCLE);
 		r.setFillBelowLine(true);
-		r.setFillBelowLineColor(Color.WHITE);
+		r.setFillBelowLineColor(Color.BLUE);
 		r.setFillPoints(true);
 		renderer.addSeriesRenderer(r);
 		renderer.setAxesColor(Color.DKGRAY);
 		renderer.setLabelsColor(Color.LTGRAY);
+
 		return renderer;
 	}
 }
