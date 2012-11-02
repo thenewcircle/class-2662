@@ -10,16 +10,20 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	private static final String TAG = "Compass";
+    public final static boolean DEBUG = false;
 	private static final String PROVIDER = LocationManager.GPS_PROVIDER;
 	private static final long MIN_TIME = 10000; // milliseconds
 	private static final float MIN_DISTANCE = 10; // meters
@@ -30,6 +34,8 @@ public class MainActivity extends Activity {
 	private GpsStatus gpsStatus;
 	private SensorManager sensorManager;
 	private Sensor sensor;
+	private PowerManager powerManager;
+	private WakeLock wakeLock;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +45,7 @@ public class MainActivity extends Activity {
 		sensorOutput = (TextView) findViewById(R.id.sensor_output);
 		compass = (CompassView) findViewById(R.id.compass);
 
+		// Location and Geo
 		geocoder = new Geocoder(this);
 		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 		Location location = locationManager.getLastKnownLocation(PROVIDER);
@@ -48,6 +55,10 @@ public class MainActivity extends Activity {
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
+		// Wake lock
+		powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
+				TAG);
 	}
 
 	@Override
@@ -58,6 +69,7 @@ public class MainActivity extends Activity {
 		locationManager.addGpsStatusListener(gpsListener);
 		sensorManager.registerListener(sensorListener, sensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
+		wakeLock.acquire();
 	}
 
 	@Override
@@ -66,6 +78,7 @@ public class MainActivity extends Activity {
 		locationManager.removeUpdates(locationListener);
 		locationManager.removeGpsStatusListener(gpsListener);
 		sensorManager.unregisterListener(sensorListener);
+		wakeLock.release();
 	}
 
 	private final LocationListener locationListener = new LocationListener() {
@@ -154,16 +167,29 @@ public class MainActivity extends Activity {
 		}
 	};
 
+	private float lastDegrees = -1;
+	private static final int TRESHHOLD = 10;
+
 	private void updateSensorEvent(SensorEvent event) {
 		if (event == null) {
 			sensorOutput.setText("No sensor data yet...");
 			return;
 		}
 
-		sensorOutput.setText(String.format(
-				"Azimuth: %.2f\nPitch: %.2f\nRoll: %.2f", event.values[0],
-				event.values[0], event.values[0]));
-		
-		compass.setDegrees(event.values[0]);
+		// Figure out the trashhold
+		if (Math.pow(event.values[0] - lastDegrees, 2) < TRESHHOLD) {
+			return;
+		}
+		lastDegrees = event.values[0];
+
+		if (DEBUG)
+			Log.d(TAG, String.format("Compass direction changed: %.2f, %.2f",
+					lastDegrees, event.values[0]));
+
+		sensorOutput.setText(String.format("Azimuth: %d\nPitch: %d\nRoll: %d",
+				(int) event.values[0], (int) event.values[1],
+				(int) event.values[2]));
+
+		compass.setDegrees((int) event.values[0]);
 	}
 }
