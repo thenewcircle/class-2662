@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class StreamProvider extends ContentProvider {
 	private static final String TAG = "Stream-StreamProvider";
@@ -74,6 +75,8 @@ public class StreamProvider extends ContentProvider {
 		// Notify the uri has changed
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
+		Log.d(TAG, "query got records: "+cursor.getCount());
+		
 		return cursor;
 	}
 
