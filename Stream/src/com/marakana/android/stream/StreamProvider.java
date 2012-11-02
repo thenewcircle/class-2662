@@ -20,9 +20,9 @@ public class StreamProvider extends ContentProvider {
 			UriMatcher.NO_MATCH);
 	static {
 		uriMatcher.addURI(StreamContract.AUTHORITY, StreamContract.PATH,
-				POST_ITEM);
-		uriMatcher.addURI(StreamContract.AUTHORITY, StreamContract.PATH + "/#",
 				POST_DIR);
+		uriMatcher.addURI(StreamContract.AUTHORITY, StreamContract.PATH + "/#",
+				POST_ITEM);
 	}
 
 	@Override
