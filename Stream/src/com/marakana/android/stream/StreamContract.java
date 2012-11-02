@@ -9,11 +9,13 @@ public final class StreamContract {
 	// content://com.marakana.android.stream.provider/feed
 	
 	public static final String AUTHORITY = "com.marakana.android.stream.provider";
-	public static final String PATH = "/"+DbHelper.TABLE;
-	public static final Uri CONTENT_URI = Uri.parse( "content://" + AUTHORITY + PATH );
+	public static final String PATH = DbHelper.TABLE;
+	public static final Uri CONTENT_URI = Uri.parse( "content://" + AUTHORITY + "/" + PATH );
 	public static final String CONTENT_TYPE_DIR = "vnd.android.cursor.dir/vnd.marakana.post";
 	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd.marakana.post";
 
+	public static final String DEFAULT_SORT = Columns.PUB_DATE + " DESC";
+	
 	/** Standard RSS column names. */
 	public static final class Columns implements BaseColumns {
 		private Columns() {}
