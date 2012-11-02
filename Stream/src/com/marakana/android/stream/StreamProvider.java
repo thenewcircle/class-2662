@@ -1,6 +1,7 @@
 package com.marakana.android.stream;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -69,7 +70,7 @@ public class StreamProvider extends ContentProvider {
 		// Do the query
 		Cursor cursor = qb.query(db, projection, selection, selectionArgs,
 				null, null, sortOrder);
-		
+
 		// Notify the uri has changed
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -78,8 +79,25 @@ public class StreamProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		// TODO Auto-generated method stub
-		return null;
+		// Valid Uri?
+		if (uriMatcher.match(uri) != POST_DIR) {
+			throw new IllegalArgumentException("Unsupported URI: " + uri);
+		}
+
+		// Insert into db
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		long id = db.insertWithOnConflict(DbHelper.TABLE, null, values,
+				SQLiteDatabase.CONFLICT_IGNORE);
+
+		// Check if insert succeeded
+		if (id > 0) {
+			Uri ret = ContentUris.withAppendedId(uri, id);
+			// Notify of change to uri
+			getContext().getContentResolver().notifyChange(ret, null);
+			return ret;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
