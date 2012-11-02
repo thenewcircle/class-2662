@@ -9,7 +9,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String TAG = "Stream-DbHelper";
 	private static final String DB_NAME = "stream.db";
 	private static final int DB_VERSION = 1;
-	private static final String TABLE = "feed";
+	public static final String TABLE = "feed";
 
 	public DbHelper(Context context) {
 		super(context, DB_NAME, null, DB_VERSION);
@@ -17,7 +17,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		String sql = String.format("create table %s ( %s text primary key,"
+		String sql = String.format("create table %s ( %s int primary key,"
 				+ "%s text, %s text, %s text, %s int, %s text)", TABLE,
 				StreamContract.Columns._ID, StreamContract.Columns.TITLE,
 				StreamContract.Columns.LINK, StreamContract.Columns.AUTHOR,

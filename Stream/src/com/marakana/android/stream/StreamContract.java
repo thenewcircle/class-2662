@@ -1,8 +1,18 @@
 package com.marakana.android.stream;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class StreamContract {
+public final class StreamContract {
+	private StreamContract() {}
+	
+	// content://com.marakana.android.stream.provider/feed
+	
+	public static final String AUTHORITY = "com.marakana.android.stream.provider";
+	public static final String PATH = "/"+DbHelper.TABLE;
+	public static final Uri CONTENT_URI = Uri.parse( "content://" + AUTHORITY + PATH );
+	public static final String CONTENT_TYPE_DIR = "vnd.android.cursor.dir/vnd.marakana.post";
+	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd.marakana.post";
 
 	/** Standard RSS column names. */
 	public static final class Columns implements BaseColumns {
