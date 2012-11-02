@@ -4,8 +4,9 @@ import android.provider.BaseColumns;
 
 public class StreamContract {
 
-	/** Column names. */
+	/** Standard RSS column names. */
 	public static final class Columns implements BaseColumns {
+		private Columns() {}
 		public static final String TITLE = "title";
 		public static final String LINK = "link";
 		public static final String AUTHOR = "author";
