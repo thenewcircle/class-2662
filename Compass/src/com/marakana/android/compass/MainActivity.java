@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 	private static final long MIN_TIME = 10000; // milliseconds
 	private static final float MIN_DISTANCE = 10; // meters
 	private TextView locationOutput, sensorOutput;
+	private CompassView compass;
 	private LocationManager locationManager;
 	private Geocoder geocoder;
 	private GpsStatus gpsStatus;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		locationOutput = (TextView) findViewById(R.id.location_output);
 		sensorOutput = (TextView) findViewById(R.id.sensor_output);
+		compass = (CompassView) findViewById(R.id.compass);
 
 		geocoder = new Geocoder(this);
 		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -161,5 +163,7 @@ public class MainActivity extends Activity {
 		sensorOutput.setText(String.format(
 				"Azimuth: %.2f\nPitch: %.2f\nRoll: %.2f", event.values[0],
 				event.values[0], event.values[0]));
+		
+		compass.setDegrees(event.values[0]);
 	}
 }
