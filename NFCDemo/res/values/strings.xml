@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">NFCDemo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">NFC Demo</string>
+    <string name="tag_content">"Tag Content: "</string>
+    <string name="write">Write</string>
+
+</resources>
